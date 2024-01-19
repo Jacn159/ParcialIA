@@ -12,35 +12,12 @@ let tile8 = document.getElementsByClassName("Tile Tile8")[0];
 
 let emptyRow, emptyCol;
 
-function randomizePuzzle() {
-    movesNum = 0;
-    movescell.innerHTML = movesNum; // update # of moves displayed
-    let positions = [
-        [1, 1],
-        [1, 2],
-        [1, 3],
-        [2, 1],
-        [2, 2],
-        [2, 3],
-        [3, 1],
-        [3, 2],
-        [3, 3],
-    ]; 
-    emptyPosition = positions.splice(Math.round(Math.random() * 8), 1);
-    emptyRow = emptyPosition[0][0];
-    emptyCol = emptyPosition[0][1];
-    let tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8];
-    for (let i = 7; i >= 0; i--) {
-        let r = Math.round(Math.random() * i);
-        let poppedPos = positions.splice(r, 1);
-        tiles[i].style.gridRow = poppedPos[0][0];
-        tiles[i].style.gridColumn = poppedPos[0][1];
-        
-    }
-};
+let tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8];
+
+
 function setInitialPositions() {
     movesNum = 0;
-    movescell.innerHTML = movesNum; // update # of moves displayed
+    movescell.innerHTML = movesNum;
     [emptyRow, emptyCol] = [3, 3]; 
     tile1.style.gridRow = 2;
     tile1.style.gridColumn = 2;
@@ -59,6 +36,28 @@ function setInitialPositions() {
     tile8.style.gridRow = 3;
     tile8.style.gridColumn = 2;
 }
+
+function isPuzzleSolved() {
+    for (let i = 0; i < tiles.length; i++) {
+        const correctRow = Math.floor(i / 3) + 1;
+        const correctCol = (i % 3) + 1;
+        const currentRow = parseInt(tiles[i].style.gridRow.charAt(0));
+        const currentCol = parseInt(tiles[i].style.gridColumn.charAt(0));
+        if (currentRow !== correctRow || currentCol !== correctCol) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function checkWin() {
+    if (isPuzzleSolved()) {
+        alert("¡Has ganado!");
+    }
+}
+
+
 //------------------------------------------------------
 // Option 2. Ordered initial positions (a solved puzzle)
 function solvePuzzle() {
@@ -98,9 +97,20 @@ function moveTile() {
     [emptyRow, emptyCol] = [tileRow, tileCol];
     movesNum++;
     movescell.innerHTML = movesNum;
+    console.log(getPositionTiles());
+    checkWin();
 }
 
-
+function getPositionTiles(){
+    return tile1.style.gridRow + tile1.style.gridColumn +
+            tile2.style.gridRow + tile2.style.gridColumn +
+            tile3.style.gridRow + tile3.style.gridColumn +
+            tile4.style.gridRow + tile4.style.gridColumn +
+            tile5.style.gridRow + tile5.style.gridColumn +
+            tile6.style.gridRow + tile6.style.gridColumn +
+            tile7.style.gridRow + tile7.style.gridColumn +
+            tile8.style.gridRow + tile8.style.gridColumn;
+}
 
 
 tile1.addEventListener("click", moveTile);
@@ -112,7 +122,7 @@ tile6.addEventListener("click", moveTile);
 tile7.addEventListener("click", moveTile);
 tile8.addEventListener("click", moveTile);
 
-document.getElementById("newgame").onclick = randomizePuzzle;
+document.getElementById("newgame").onclick = setInitialPositions;
 document.getElementById("solveit").onclick = solvePuzzle;
 
 setInitialPositions()
