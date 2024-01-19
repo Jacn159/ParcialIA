@@ -37,24 +37,12 @@ function setInitialPositions() {
     tile8.style.gridColumn = 2;
 }
 
-function isPuzzleSolved() {
-    for (let i = 0; i < tiles.length; i++) {
-        const correctRow = Math.floor(i / 3) + 1;
-        const correctCol = (i % 3) + 1;
-        const currentRow = parseInt(tiles[i].style.gridRow.charAt(0));
-        const currentCol = parseInt(tiles[i].style.gridColumn.charAt(0));
-        if (currentRow !== correctRow || currentCol !== correctCol) {
-            return false;
-        }
-    }
 
-    return true;
-}
+
 
 function checkWin() {
-    if (isPuzzleSolved()) {
-        alert("¡Has ganado!");
-    }
+    const isPuzzleSolved = getPositionTiles() !== "1112132333323121" ? false : true;
+    if (isPuzzleSolved) alert("¡Has ganado!");
 }
 
 
@@ -97,8 +85,7 @@ function moveTile() {
     [emptyRow, emptyCol] = [tileRow, tileCol];
     movesNum++;
     movescell.innerHTML = movesNum;
-    console.log(getPositionTiles());
-    checkWin();
+    window.setTimeout(checkWin, 100);
 }
 
 function getPositionTiles(){
