@@ -14,11 +14,10 @@ let emptyRow, emptyCol;
 
 let tiles = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8];
 
-
 function setInitialPositions() {
     movesNum = 0;
     movescell.innerHTML = movesNum;
-    [emptyRow, emptyCol] = [3, 3]; 
+    [emptyRow, emptyCol] = [3, 3];
     tile1.style.gridRow = 2;
     tile1.style.gridColumn = 2;
     tile2.style.gridRow = 2;
@@ -37,38 +36,28 @@ function setInitialPositions() {
     tile8.style.gridColumn = 2;
 }
 
-
-
-
 function checkWin() {
-    const isPuzzleSolved = getPositionTiles() !== "1112132333323121" ? false : true;
+    const isPuzzleSolved =
+        getPositionTiles() !== "1112132333323121" ? false : true;
     if (isPuzzleSolved) alert("¡Has ganado!");
 }
 
-
 //------------------------------------------------------
-// Option 2. Ordered initial positions (a solved puzzle)
 function solvePuzzle() {
     movesNum = 0;
     movescell.innerHTML = movesNum;
-    [emptyRow, emptyCol] = [2, 2];
-    tile1.style.gridRow = 1;
-    tile1.style.gridColumn = 1;
-    tile2.style.gridRow = 1;
-    tile2.style.gridColumn = 2;
-    tile3.style.gridRow = 1;
-    tile3.style.gridColumn = 3;
-    tile4.style.gridRow = 2;
-    tile4.style.gridColumn = 3;
-    tile5.style.gridRow = 3;
-    tile5.style.gridColumn = 3;
-    tile6.style.gridRow = 3;
-    tile6.style.gridColumn = 2;
-    tile7.style.gridRow = 3;
-    tile7.style.gridColumn = 1;
-    tile8.style.gridRow = 2;
-    tile8.style.gridColumn = 1;
-};
+    setInitialPositions();
+    const correctSequenceByInnerHtmlTiles = "47632176321785786456".split("");
+    let currentIndex = 0;
+    const solveInterval = setInterval(() => {
+        const char = correctSequenceByInnerHtmlTiles[currentIndex];
+        tiles.forEach((tile) => tile.innerHTML === char ? tile.click() : null);
+        currentIndex++;
+        if (currentIndex >= correctSequenceByInnerHtmlTiles.length) {
+            clearInterval(solveInterval);
+        }
+    }, 200);
+}
 //------------------------------------------------------
 
 function moveTile() {
@@ -76,29 +65,35 @@ function moveTile() {
     const tileCol = parseInt(this.style.gridColumn.charAt(0));
     const isHorizontal = tileCol === emptyCol;
     const isVertical = tileRow === emptyRow;
-    const isAdjacent = (empty,tile) => Math.abs(empty-tile) === 1;
-    const canMoveHorizontaly = isAdjacent(emptyRow,tileRow);
-    const canMoveVerticaly = isAdjacent(emptyCol,tileCol);
-    if (!(isHorizontal && canMoveHorizontaly) && !(isVertical && canMoveVerticaly)) return;
-    this.style.gridRow = isHorizontal ? emptyRow.toString() : this.style.gridRow;
-    this.style.gridColumn = isVertical ? emptyCol.toString() : this.style.gridColumn;
+    const isAdjacent = (empty, tile) => Math.abs(empty - tile) === 1;
+    const canMoveHorizontaly = isAdjacent(emptyRow, tileRow);
+    const canMoveVerticaly = isAdjacent(emptyCol, tileCol);
+    if (
+        !(isHorizontal && canMoveHorizontaly) &&
+        !(isVertical && canMoveVerticaly)
+    )
+        return;
+    this.style.gridRow = isHorizontal
+        ? emptyRow.toString()
+        : this.style.gridRow;
+    this.style.gridColumn = isVertical
+        ? emptyCol.toString()
+        : this.style.gridColumn;
     [emptyRow, emptyCol] = [tileRow, tileCol];
+    console.log(getPositionTiles());
     movesNum++;
     movescell.innerHTML = movesNum;
     window.setTimeout(checkWin, 100);
 }
 
-function getPositionTiles(){
-    return tile1.style.gridRow + tile1.style.gridColumn +
-            tile2.style.gridRow + tile2.style.gridColumn +
-            tile3.style.gridRow + tile3.style.gridColumn +
-            tile4.style.gridRow + tile4.style.gridColumn +
-            tile5.style.gridRow + tile5.style.gridColumn +
-            tile6.style.gridRow + tile6.style.gridColumn +
-            tile7.style.gridRow + tile7.style.gridColumn +
-            tile8.style.gridRow + tile8.style.gridColumn;
+function getPositionTiles() {
+    let position = "";
+    tiles.forEach((tile) => {
+        position += tile.style.gridRow.charAt(0);
+        position += tile.style.gridColumn.charAt(0);
+    });
+    return position;
 }
-
 
 tile1.addEventListener("click", moveTile);
 tile2.addEventListener("click", moveTile);
@@ -112,4 +107,4 @@ tile8.addEventListener("click", moveTile);
 document.getElementById("newgame").onclick = setInitialPositions;
 document.getElementById("solveit").onclick = solvePuzzle;
 
-setInitialPositions()
+setInitialPositions();
